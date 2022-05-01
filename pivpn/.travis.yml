@@ -1,0 +1,181 @@
+language: shell
+
+addons:
+  hosts:
+    - pivpn.test
+  apt:
+    packages:
+      - shellcheck
+
+services:
+  - docker
+
+stages:
+  - lint
+  - test
+
+branches:
+  only:
+    - test
+    - master
+
+jobs:
+  include:
+    - stage: lint
+      name: "Shellcheck lint"
+      dist: focal
+      virt: vm
+      arch: amd64
+      script:
+        - shellcheck auto_install/install.sh
+        - find scripts/ -type f | xargs shellcheck
+
+    - stage: test
+      name: "OpenVPN Xenial & Commands"
+      dist: xenial
+      virt: vm
+      arch: amd64
+      before_script: 
+        - cat /etc/os-release
+        - uname -a
+        - ip a
+        - sudo chmod +x ciscripts/startup.sh
+        - ./ciscripts/startup.sh -o
+      script:
+        - sudo ./auto_install/install.sh --unattended ciscripts/ci_openvpn.conf
+      after_script:
+        - systemctl status openvpn
+        - pivpn add -n foo nopass -d 180
+        - pivpn add -p "$RANDOM$RANDOM" -n bar -d 180
+        - pivpn add -o -n foo
+        - pivpn -bk
+        - ls ~pi/pivpnbackup/ | grep backup
+        - pivpn -l
+        - pivpn -c
+        - pivpn -r foo -y
+      after_fail:
+        - sudo journalctl -xe
+
+    - stage: test
+      name: "Wireguard Xenial & Commands"
+      dist: xenial
+      virt: vm
+      arch: amd64
+      before_script: 
+        - cat /etc/os-release
+        - uname -a
+        - ip a
+        - sudo chmod +x ciscripts/startup.sh
+        - ./ciscripts/startup.sh -w
+      script: 
+        - sudo ./auto_install/install.sh --unattended ciscripts/ci_wireguard.conf
+      after_script:
+        - systemctl status wg-quick@wg0
+        - pivpn add -n foo
+        - pivpn -qr foo
+        - pivpn -bk
+        - ls ~pi/pivpnbackup/ | grep backup
+        - pivpn -l
+        - pivpn -c
+        - pivpn -r foo -y
+      after_fail:
+        - sudo journalctl -xe
+
+    - stage: test
+      name: "OpenVPN Bionic & Commands"
+      dist: bionic
+      virt: vm
+      arch: amd64
+      before_script: 
+        - cat /etc/os-release
+        - uname -a
+        - ip a
+        - sudo chmod +x ciscripts/startup.sh
+        - ./ciscripts/startup.sh -o
+      script:
+        - sudo ./auto_install/install.sh --unattended ciscripts/ci_openvpn.conf
+        - systemctl status openvpn
+        - pivpn add -n foo nopass -d 180
+        - pivpn add -p "$RANDOM$RANDOM" -n bar -d 180
+        - pivpn add -o -n foo
+        - pivpn -bk
+        - ls ~pi/pivpnbackup/ | grep backup
+        - pivpn -l
+        - pivpn -c
+        - pivpn -r foo -y
+      after_fail:
+        - sudo journalctl -xe
+
+    - stage: test
+      name: "Wireguard Bionic & Commands"
+      dist: bionic
+      virt: vm
+      arch: amd64
+      before_script: 
+        - cat /etc/os-release
+        - uname -a
+        - ip a
+        - sudo apt update -y
+        - sudo chmod +x ciscripts/startup.sh
+        - ./ciscripts/startup.sh -w
+      script: 
+        - sudo ./auto_install/install.sh --unattended ciscripts/ci_wireguard.conf
+        - systemctl status wg-quick@wg0
+        - pivpn add -n foo
+        - pivpn -qr foo
+        - pivpn -bk
+        - ls ~pi/pivpnbackup/ | grep backup
+        - pivpn -l
+        - pivpn -c
+        - pivpn -r foo -y
+      after_fail:
+        - sudo journalctl -xe
+
+    - stage: test
+      name: "OpenVPN Focal & Commands"
+      dist: focal
+      virt: vm
+      arch: amd64
+      before_script: 
+        - cat /etc/os-release
+        - uname -a
+        - ip a
+        - sudo chmod +x ciscripts/startup.sh
+        - ./ciscripts/startup.sh -o
+      script:
+        - sudo ./auto_install/install.sh --unattended ciscripts/ci_openvpn.conf
+        - systemctl status openvpn
+        - pivpn add -n foo nopass -d 180
+        - pivpn add -p "$RANDOM$RANDOM" -n bar -d 180
+        - pivpn add -o -n foo
+        - pivpn -bk
+        - ls ~pi/pivpnbackup/ | grep backup
+        - pivpn -l
+        - pivpn -c
+        - pivpn -r foo -y
+      after_fail:
+        - sudo journalctl -xe
+
+    - stage: test
+      name: "Wireguard Focal & Commands"
+      dist: focal
+      virt: vm
+      arch: amd64
+      before_script: 
+        - cat /etc/os-release
+        - uname -a
+        - ip a
+        - sudo chmod +x ciscripts/startup.sh
+        - ./ciscripts/startup.sh -w
+      script: 
+        - sudo ./auto_install/install.sh --unattended ciscripts/ci_wireguard.conf
+        - systemctl status wg-quick@wg0
+        - pivpn add -n foo
+        - pivpn -qr foo
+        - pivpn -bk
+        - ls ~pi/pivpnbackup/ | grep backup
+        - pivpn -l
+        - pivpn -c
+        - pivpn -r foo -y
+      after_fail:
+        - sudo journalctl -xe
