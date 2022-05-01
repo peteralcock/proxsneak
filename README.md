@@ -1,42 +1,13 @@
 <h1 align="center">Proxsneak</h1>
 
-<h4 align="center">Create multiple proxy instances with load-balancing.</h4>
+<h4 align="center">Create multiple proxy instances with load-balancing for sneakerbots</h4>
 
-
-<p align="center">
-   <a href="#description">Description</a>
- • <a href="#introduction">Introduction</a>
- • <a href="#how-to-use">How To Use</a>
- • <a href="#parameters">Parameters</a>
- • <a href="#requirements">Requirements</a>
- • <a href="#docker">Docker</a>
- • <a href="#other">Other</a>
- • <a href="#license">License</a>
- • <a href="https://github.com/trimstray/multitor/wiki">Wiki</a>
-</p>
-
-<div align="center">
-  <sub>Created by
-  <a href="https://twitter.com/trimstray">trimstray</a> and
-  <a href="https://github.com/trimstray/multitor/graphs/contributors">contributors</a>
-</div>
-
-<br>
-
-<p align="center">
-  <img src="https://github.com/trimstray/multitor/blob/master/static/img/multitor_output_1.png" alt="Master">
-</p>
 
 ## Description
 
 It provides one single endpoint for clients. Supports **[HAProxy](http://www.haproxy.org/)**, **socks** protocol and **http-proxy** servers: **[polipo](https://www.irif.fr/~jch/software/polipo/)**, **[privoxy](https://www.privoxy.org/)** and **[hpts](https://github.com/oyyd/http-proxy-to-socks)**.
 
 In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes.
-
-> The `multitor` has been completely rewritten on the basis of:
->
-> - **Multi-TOR** project written by *Jan Seidl*: [Multi-TOR](https://github.com/jseidl/Multi-TOR)
-> - original source is (*Sebastian Wain* project): [Distributed Scraping With Multiple TOR Circuits](http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/)
 
 ## Introduction
 
@@ -63,11 +34,6 @@ Look also at **[Limitations](#limitations)**.
 It's simple:
 
 ```bash
-# Clone this repository
-git clone https://github.com/trimstray/multitor
-
-# Go into the repository
-cd multitor
 
 # Install
 ./setup.sh install
@@ -106,35 +72,6 @@ Provides the following options:
         --proxy <proxy_type>          set socks or http (polipo, privoxy, hpts) proxy server
         --haproxy                     set HAProxy as a frontend for http proxies (only with --proxy)
 ```
-
-## Requirements
-
-`multitor` uses external utilities to be installed before running:
-
-- [tor](https://www.torproject.org/)
-- [netcat](http://netcat.sourceforge.net/)
-- [haproxy](https://www.haproxy.org/)
-- [polipo](https://www.irif.fr/~jch/software/polipo/)
-- [privoxy](https://www.privoxy.org/)
-- [http-proxy-to-socks](https://github.com/oyyd/http-proxy-to-socks)
-
-This tool working with:
-
-- **GNU/Linux** (testing on Debian and CentOS)
-- **[Bash](https://www.gnu.org/software/bash/)** (testing on 4.4.19)
-
-Also you will need **root access**.
-
-## Docker
-
-See this project: **[docker-multitor](https://github.com/evait-security/docker-multitor)**
-
-## Other
-
-### Important
-
-If you use this tool in other scripts where the output is saved everywhere, not on the screen, remember that you will not be able to use the generated password. I will correct this in the next version. If you do not use regenerate function of single or all **TOR** circuits with a password, you can safely restart the `multitor` which will do it for you.
-
 ### Limitations
 
 - each **TOR**, **http-proxy** and **HAProxy** processes needs a certain number of memory. If the number of **TOR** processes is too big, the oldest one will be automatically killed by the system
